@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Calculator - Hyperspace</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			.calculator {
+				max-width: 800px;
+				margin: 0 auto;
+				background: rgba(255, 255, 255, 0.05);
+				padding: 2rem;
+				border-radius: 10px;
+				box-sizing: border-box;
+			}
+			.calculator-display {
+				width: 100%;
+				height: 60px;
+				font-size: 2rem;
+				text-align: right;
+				padding: 0 1rem;
+				margin-bottom: 1rem;
+				background: rgba(0, 0, 0, 0.3);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				color: #fff;
+				border-radius: 5px;
+				box-sizing: border-box;
+			}
+			.calculator-buttons {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 0.5rem;
+				width: 100%;
+				box-sizing: border-box;
+			}
+			.calculator-button {
+				height: 60px;
+				font-size: 1.2rem;
+				border: none;
+				background: rgba(255, 255, 255, 0.1);
+				color: #fff;
+				cursor: pointer;
+				border-radius: 5px;
+				transition: background 0.3s;
+				box-sizing: border-box;
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				line-height: 1;
+			}
+			.calculator-button:hover {
+				background: rgba(255, 255, 255, 0.2);
+			}
+			.calculator-button.operator {
+				background: rgba(255, 165, 0, 0.3);
+			}
+			.calculator-button.operator:hover {
+				background: rgba(255, 165, 0, 0.5);
+			}
+			.calculator-button.equals {
+				background: rgba(0, 128, 0, 0.3);
+			}
+			.calculator-button.equals:hover {
+				background: rgba(0, 128, 0, 0.5);
+			}
+			.calculator-button.clear {
+				background: rgba(255, 0, 0, 0.3);
+			}
+			.calculator-button.clear:hover {
+				background: rgba(255, 0, 0, 0.5);
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<div class="logo">
+						<img src="images/pic01.jpg" alt="Logo">
+					</div>
+					<nav>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="welcome.html">QR Code generator</a></li>
+							<li><a href="who-we-are.html" class="active">Calculator</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Calculator</h1>
+							<div class="calculator">
+								<input type="text" class="calculator-display" id="display" readonly value="0">
+								<div class="calculator-buttons">
+									<button class="calculator-button clear" onclick="clearDisplay()">C</button>
+									<button class="calculator-button clear" onclick="clearEntry()">CE</button>
+									<button class="calculator-button operator" onclick="appendOperator('/')">/</button>
+									<button class="calculator-button operator" onclick="appendOperator('*')">×</button>
+									<button class="calculator-button" onclick="appendNumber('7')">7</button>
+									<button class="calculator-button" onclick="appendNumber('8')">8</button>
+									<button class="calculator-button" onclick="appendNumber('9')">9</button>
+									<button class="calculator-button operator" onclick="appendOperator('-')">-</button>
+									<button class="calculator-button" onclick="appendNumber('4')">4</button>
+									<button class="calculator-button" onclick="appendNumber('5')">5</button>
+									<button class="calculator-button" onclick="appendNumber('6')">6</button>
+									<button class="calculator-button operator" onclick="appendOperator('+')">+</button>
+									<button class="calculator-button" onclick="appendNumber('1')">1</button>
+									<button class="calculator-button" onclick="appendNumber('2')">2</button>
+									<button class="calculator-button" onclick="appendNumber('3')">3</button>
+									<button class="calculator-button equals" onclick="calculate()" style="grid-row: span 2;">=</button>
+									<button class="calculator-button" onclick="appendNumber('0')" style="grid-column: span 2;">0</button>
+									<button class="calculator-button" onclick="appendDecimal()">.</button>
+								</div>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>Made by Aykhan</li>
+						<li><a href="https://www.instagram.com/ayxan.ahm/" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/color-changer.js"></script>
+			<script>
+				let display = document.getElementById('display');
+				let currentInput = '0';
+				let operator = null;
+				let previousInput = null;
+				let shouldResetDisplay = false;
+
+				function updateDisplay() {
+					display.value = currentInput;
+				}
+
+				function appendNumber(number) {
+					if (shouldResetDisplay) {
+						currentInput = '0';
+						shouldResetDisplay = false;
+					}
+					if (currentInput === '0') {
+						currentInput = number;
+					} else {
+						currentInput += number;
+					}
+					updateDisplay();
+				}
+
+				function appendDecimal() {
+					if (shouldResetDisplay) {
+						currentInput = '0';
+						shouldResetDisplay = false;
+					}
+					if (currentInput.indexOf('.') === -1) {
+						currentInput += '.';
+					}
+					updateDisplay();
+				}
+
+				function appendOperator(op) {
+					if (operator !== null && !shouldResetDisplay) {
+						calculate();
+					}
+					previousInput = currentInput;
+					operator = op;
+					shouldResetDisplay = true;
+				}
+
+				function calculate() {
+					if (operator === null || previousInput === null) {
+						return;
+					}
+					
+					let result;
+					let prev = parseFloat(previousInput);
+					let current = parseFloat(currentInput);
+					
+					switch(operator) {
+						case '+':
+							result = prev + current;
+							break;
+						case '-':
+							result = prev - current;
+							break;
+						case '*':
+							result = prev * current;
+							break;
+						case '/':
+							if (current === 0) {
+								alert('Cannot divide by zero!');
+								clearDisplay();
+								return;
+							}
+							result = prev / current;
+							break;
+						default:
+							return;
+					}
+					
+					currentInput = result.toString();
+					operator = null;
+					previousInput = null;
+					shouldResetDisplay = true;
+					updateDisplay();
+				}
+
+				function clearDisplay() {
+					currentInput = '0';
+					operator = null;
+					previousInput = null;
+					shouldResetDisplay = false;
+					updateDisplay();
+				}
+
+				function clearEntry() {
+					currentInput = '0';
+					updateDisplay();
+				}
+			</script>
+
+	</body>
+</html>
+
+
